@@ -11,16 +11,12 @@ gainNode.connect(audioCtx.destination);
 
 var BUTTON_SIZE = 50;
 var STEP_EVERY = 200;
-var TRACKS_ROW = 0;
-var STEPS_ROW = 1;
 
 function isPointInsideRectangle(p, r) {
-  return p &&
-    r &&
-    !(p.x < r.x ||
-      p.y < r.y ||
-      p.x > r.x + BUTTON_SIZE ||
-      p.y > r.y + BUTTON_SIZE);
+  return !(p.x < r.x ||
+           p.y < r.y ||
+           p.x > r.x + BUTTON_SIZE ||
+           p.y > r.y + BUTTON_SIZE);
 };
 
 var latestClick = (function() {
@@ -57,40 +53,14 @@ function createTrack() {
   return [false, false, false, false, false, false, false, false];
 };
 
-function drawTracks(screen, data) {
-  var COLORS = ["deeppink", "lightseagreen", "dodgerblue", "crimson"];
-  data.tracks.forEach(function(_, i) {
-    var position = buttonPosition(i, TRACKS_ROW);
-    screen.fillStyle = i === data.iTrack ? COLORS[i] : "lightgray";
-    screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE);
-  });
-};
-
-function drawStepSequencer(screen, data) {
-  data.tracks[data.iTrack].forEach(function(on, i) {
-    var position = buttonPosition(i, STEPS_ROW);
-    screen.fillStyle = on ? "gold" : "lightgray";
-    screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE);
-
-    if (i === data.iStep) {
-      screen.fillStyle = "gray";
-      screen.fillRect(position.x, position.y + BUTTON_SIZE, BUTTON_SIZE, 4);
-    }
-  });
-};
-
 function update(data) {
   var click = latestClick();
 
-  for (var i = 0; i < data.tracks[data.iTrack].length; i++) {
-    if (isPointInsideRectangle(click, buttonPosition(i, STEPS_ROW))) {
-      data.tracks[data.iTrack][i] = !data.tracks[data.iTrack][i];
-    }
-  }
-
-  for (var i = 0; i < data.tracks.length; i++) {
-    if (isPointInsideRectangle(click, buttonPosition(i, TRACKS_ROW))) {
-      data.iTrack = i;
+  for (var row = 0; row < data.tracks.length; row++) {
+    for (var column = 0; column < data.tracks[row].length; column++) {
+      if (click && isPointInsideRectangle(click, buttonPosition(column, row))) {
+        data.tracks[row][column] = !data.tracks[row][column];
+      }
     }
   }
 
@@ -102,12 +72,21 @@ function update(data) {
 
 function draw(screen, data) {
   screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
-  drawTracks(screen, data);
-  drawStepSequencer(screen, data);
+
+  data.tracks.forEach(function(track, row) {
+    data.tracks[row].forEach(function(on, column) {
+      var position = buttonPosition(column, row);
+      screen.fillStyle = on ? "gold" : "lightgray";
+      screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE);
+    });
+  });
+
+  var position = buttonPosition(data.iStep, data.tracks.length);
+  screen.fillStyle = "deeppink";
+  screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE / 8);
 };
 
 var data = {
-  iTrack: 0,
   tracks: [createTrack(), createTrack(), createTrack(), createTrack()],
   iStep: 0,
   lastStepTime: Date.now()
