@@ -1,0 +1,12 @@
+{
+  "name": "sound",
+  "description": "A sound thing.",
+  "author": "Mary Rose Cook <mary@maryrosecook.com> (http://maryrosecook.com/)",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "live-server . --port=4000 --no-browser --host=localhost"
+  },
+  "dependencies": {
+    "live-server": "^0.8.2"
+  }
+}
