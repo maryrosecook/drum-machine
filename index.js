@@ -11,51 +11,25 @@ gainNode.connect(audioCtx.destination);
 
 var BUTTON_SIZE = 50;
 var STEP_EVERY = 200;
-
-var mousePosition = (function() {
-  var mousePosition = { x: 0, y: 0 };
-  window.addEventListener("mousemove", function(e) {
-    mousePosition = { x: e.clientX, y: e.clientY };
-  });
-
-  return function() {
-    return mousePosition;
-  };
-})();
-
-function pageSize() {
-  return { x: document.body.clientWidth, y: document.body.clientHeight };
-};
-
-function drawButton(screen, button) {
-  screen.fillStyle = button.on ? button.color : "lightgray";
-  screen.fillRect(button.x, button.y, BUTTON_SIZE, BUTTON_SIZE);
-};
-
-function drawCurrentStep(screen, steps) {
-  var button = steps.filter(function(button) { return button.currentStep; })[0];
-  screen.fillStyle = "darkgoldenrod";
-  screen.fillRect(button.x, button.y + BUTTON_SIZE - 6, BUTTON_SIZE, 6);
-};
-
-function createButton(position, color, click) {
-  return { x: position.x, y: position.y, color: color, click: click, on: false };
-};
+var TRACKS_ROW = 0;
+var STEPS_ROW = 1;
 
 function isPointInsideRectangle(p, r) {
-  return !(p.x < r.x ||
-           p.y < r.y ||
-           p.x > r.x + BUTTON_SIZE ||
-           p.y > r.y + BUTTON_SIZE);
+  return p &&
+    r &&
+    !(p.x < r.x ||
+      p.y < r.y ||
+      p.x > r.x + BUTTON_SIZE ||
+      p.y > r.y + BUTTON_SIZE);
 };
 
-var newClickPositions = (function createNewClickPositions() {
-  var clicks = [];
+var latestClick = (function() {
+  var latestClick;
   var mouseDown = false;
 
   window.addEventListener("mousedown", function(e) {
     if (!mouseDown) {
-      clicks.push({ x: e.clientX, y: e.clientY });
+      latestClick = { x: e.clientX, y: e.clientY };
     }
 
     mouseDown = true;
@@ -65,8 +39,10 @@ var newClickPositions = (function createNewClickPositions() {
     mouseDown = false;
   });
 
-  return function newClickPositions() {
-    return clicks.splice(0, clicks.length);
+  return function() {
+    var latestClick_ = latestClick;
+    latestClick = undefined;
+    return latestClick_;
   };
 })();
 
@@ -77,83 +53,75 @@ function buttonPosition(column, row) {
   };
 };
 
-function createDrumMachine() {
-  var drumMachine = { steps: [], lastStepTime: Date.now(), tracks: [] };
+function createTrack() {
+  return [false, false, false, false, false, false, false, false];
+};
 
-  ["deeppink", "lightseagreen", "dodgerblue", "crimson"].forEach(function(color, i) {
-    var position = buttonPosition(i, 0);
-    var button = createButton(position, color, function(button) {
-      drumMachine.tracks.forEach(function(button) {
-        button.on = false;
-      });
-
-      button.on = true;
-    });
-
-    drumMachine.tracks.push(button);
+function drawTracks(screen, data) {
+  var COLORS = ["deeppink", "lightseagreen", "dodgerblue", "crimson"];
+  data.tracks.forEach(function(_, i) {
+    var position = buttonPosition(i, TRACKS_ROW);
+    screen.fillStyle = i === data.iTrack ? COLORS[i] : "lightgray";
+    screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE);
   });
-
-  for (var i = 0; i < 8; i++) {
-    var button = createButton(buttonPosition(i, 1), "gold", function(button) {
-      button.on = !button.on;
-    });
-
-    button.currentStep = i === 0 ? true : false;
-    drumMachine.steps.push(button);
-  }
-
-  return drumMachine;
 };
 
-function update(drumMachine) {
-  var clickPositions = newClickPositions();
+function drawStepSequencer(screen, data) {
+  data.tracks[data.iTrack].forEach(function(on, i) {
+    var position = buttonPosition(i, STEPS_ROW);
+    screen.fillStyle = on ? "gold" : "lightgray";
+    screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE);
 
-  function buttonGotClicked(button) {
-    return clickPositions
-      .filter(function(p) { return isPointInsideRectangle(p, button); })
-      .length > 0;
-  };
-
-  drumMachine.steps.concat(drumMachine.tracks)
-    .filter(buttonGotClicked)
-    .forEach(function(button) { button.click(button); });
-
-  if (drumMachine.lastStepTime + STEP_EVERY < Date.now()) {
-    var iCurrentStep;
-    for (var i = 0; i < drumMachine.steps.length; i++) {
-      if (drumMachine.steps[i].currentStep) {
-        iCurrentStep = i;
-        break;
-      }
+    if (i === data.iStep) {
+      screen.fillStyle = "gray";
+      screen.fillRect(position.x, position.y + BUTTON_SIZE, BUTTON_SIZE, 4);
     }
+  });
+};
 
-    var iNextStep = (iCurrentStep + 1) % drumMachine.steps.length;
+function update(data) {
+  var click = latestClick();
 
-    drumMachine.steps[iCurrentStep].currentStep = false;
-    drumMachine.steps[iNextStep].currentStep = true;
-    drumMachine.lastStepTime = Date.now();
+  for (var i = 0; i < data.tracks[data.iTrack].length; i++) {
+    if (isPointInsideRectangle(click, buttonPosition(i, STEPS_ROW))) {
+      data.tracks[data.iTrack][i] = !data.tracks[data.iTrack][i];
+    }
+  }
+
+  for (var i = 0; i < data.tracks.length; i++) {
+    if (isPointInsideRectangle(click, buttonPosition(i, TRACKS_ROW))) {
+      data.iTrack = i;
+    }
+  }
+
+  if (data.lastStepTime + STEP_EVERY < Date.now()) {
+    data.iStep = (data.iStep + 1) % data.tracks[0].length;
+    data.lastStepTime = Date.now();
   }
 };
 
-function draw(screen, drumMachine) {
+function draw(screen, data) {
   screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
-
-  drumMachine.steps.concat(drumMachine.tracks)
-    .forEach(function(button) {
-      drawButton(screen, button);
-    });
-
-  drawCurrentStep(screen, drumMachine.steps);
+  drawTracks(screen, data);
+  drawStepSequencer(screen, data);
 };
 
-var drumMachine = createDrumMachine();
+var data = {
+  iTrack: 0,
+  tracks: [createTrack(), createTrack(), createTrack(), createTrack()],
+  iStep: 0,
+  lastStepTime: Date.now()
+};
+
 var screen = document.getElementById("screen").getContext("2d");
 
 (function tick() {
-  update(drumMachine);
+  update(data);
+  draw(screen, data);
+  requestAnimationFrame(tick);
   // oscillator.frequency.value = mousePosition().x;
   // gainNode.gain.value = 1 - (mousePosition().y / pageSize().y);
-  draw(screen, drumMachine);
 
-  requestAnimationFrame(tick);
+
+
 })();
