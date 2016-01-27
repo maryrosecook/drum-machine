@@ -10,9 +10,9 @@ function createFilter(type, frequency) {
   return filter;
 };
 
-function createGain(start, end, time) {
+function createGain(start, time) {
   var gain = audio.createGain();
-  decay(gain.gain, start, end, time);
+  decay(gain.gain, start, time);
   return gain;
 };
 
@@ -34,16 +34,16 @@ function chain(items) {
   }
 };
 
-function decay(item, start, end, time) {
+function decay(item, start, time) {
 	item.setValueAtTime(start, audio.currentTime);
-	item.exponentialRampToValueAtTime(end, audio.currentTime + time);
+	item.exponentialRampToValueAtTime(0.01, audio.currentTime + time);
 };
 
-function createOscillator(type, startFreq, endFreq, time) {
+function createOscillator(type, frequency, time) {
   var oscillator = audio.createOscillator();
   oscillator.type = type;
 
-  decay(oscillator.frequency, startFreq, endFreq, time);
+  decay(oscillator.frequency, frequency, time);
 	oscillator.start(audio.currentTime);
 	oscillator.stop(audio.currentTime + time);
 
@@ -52,8 +52,8 @@ function createOscillator(type, startFreq, endFreq, time) {
 
 function kick() {
   var time = 0.2;
-  chain([createOscillator("sine", 160, 0.01, time),
-         createGain(0.5, 0.01, time),
+  chain([createOscillator("sine", 160, time),
+         createGain(0.5, time),
          audio.destination]);
 };
 
@@ -61,20 +61,20 @@ function highHat() {
   var time = 0.3;
   chain([createNoise(time),
          createFilter("highpass", 10000),
-         createGain(0.2, 0.01, time),
+         createGain(0.2, time),
          audio.destination]);
 };
 
 function snare() {
   var time = 0.2;
 
-  chain([createOscillator("triangle", 150, 0.01, time),
-         createGain(0.7, 0.01, time),
+  chain([createOscillator("triangle", 150, time),
+         createGain(0.7, time),
          audio.destination]);
 
   chain([createNoise(time),
          createFilter("highpass", 5000),
-         createGain(0.4, 0.01, time),
+         createGain(0.4, time),
          audio.destination]);
 };
 
