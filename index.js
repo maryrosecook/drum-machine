@@ -85,7 +85,8 @@ function drawButton(screen, column, row, color) {
 
 var data = {
   step: 0,
-  tracks: [createTrack(note(659)),
+  tracks: [createTrack(note(880)),
+           createTrack(note(659)),
            createTrack(note(587)),
            createTrack(note(523)),
            createTrack(note(440)),
