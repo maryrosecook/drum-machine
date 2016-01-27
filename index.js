@@ -1,28 +1,31 @@
-var audioContext = new window.AudioContext();
+var audio = new window.AudioContext();
 
 var BUTTON_SIZE = 25;
 var STEP_EVERY = 100;
 
-function noise(frequency, startGain, endGain, duration) {
-  var startTime = audioContext.currentTime;
-  var stopTime = startTime + duration;
+function createFilter(type, frequency) {
+	var filter = audio.createBiquadFilter();
+	filter.type = type;
+	filter.frequency.value = frequency;
+  return filter;
+};
 
-	var bufferSize = audioContext.sampleRate * duration;
-  var noise = audioContext.createBufferSource();
-  noise.buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+function createGain(start, end, time) {
+  var gain = audio.createGain();
+  decay(gain.gain, start, end, time);
+  return gain;
+};
+
+function createNoise(time) {
+  var noise = audio.createBufferSource();
+  noise.buffer = audio.createBuffer(1, audio.sampleRate * time, audio.sampleRate);
   noise.buffer.getChannelData(0)
     .forEach(function(_, i, output) { output[i] = Math.random() * 2 - 1; });
 
-	var noiseFilter = audioContext.createBiquadFilter();
-	noiseFilter.type = 'highpass';
-	noiseFilter.frequency.value = frequency;
+	noise.start(audio.currentTime);
+	noise.stop(audio.currentTime + time);
 
-  var noiseEnvelope = audioContext.createGain();
-  decay(noiseEnvelope.gain, startGain, endGain, startTime, stopTime);
-  chain([noise, noiseFilter, noiseEnvelope, audioContext.destination]);
-
-	noise.start(startTime);
-	noise.stop(stopTime);
+  return noise;
 };
 
 function chain(items) {
@@ -31,26 +34,48 @@ function chain(items) {
   }
 };
 
-function decay(item, start, end, startTime, stopTime) {
-	item.setValueAtTime(start, startTime);
-	item.exponentialRampToValueAtTime(end, stopTime);
+function decay(item, start, end, time) {
+	item.setValueAtTime(start, audio.currentTime);
+	item.exponentialRampToValueAtTime(end, audio.currentTime + time);
 };
 
-function oscillator(type, startFreq, endFreq, startGain, endGain, duration) {
-  var startTime = audioContext.currentTime;
-  var stopTime = startTime + duration;
-
-  var oscillator = audioContext.createOscillator();
+function createOscillator(type, startFreq, endFreq, time) {
+  var oscillator = audio.createOscillator();
   oscillator.type = type;
-  decay(oscillator.frequency, startFreq, endFreq, startTime, stopTime);
 
-  var gain = audioContext.createGain();
-  decay(gain.gain, startGain, endGain, startTime, stopTime);
+  decay(oscillator.frequency, startFreq, endFreq, time);
+	oscillator.start(audio.currentTime);
+	oscillator.stop(audio.currentTime + time);
 
-  chain([oscillator, gain, audioContext.destination]);
+  return oscillator;
+};
 
-	oscillator.start(startTime);
-	oscillator.stop(stopTime);
+function kick() {
+  var time = 0.2;
+  chain([createOscillator("sine", 160, 0.01, time),
+         createGain(0.5, 0.01, time),
+         audio.destination]);
+};
+
+function highHat() {
+  var time = 0.3;
+  chain([createNoise(time),
+         createFilter("highpass", 10000),
+         createGain(0.2, 0.01, time),
+         audio.destination]);
+};
+
+function snare() {
+  var time = 0.2;
+
+  chain([createOscillator("triangle", 150, 0.01, time),
+         createGain(0.7, 0.01, time),
+         audio.destination]);
+
+  chain([createNoise(time),
+         createFilter("highpass", 5000),
+         createGain(0.4, 0.01, time),
+         audio.destination]);
 };
 
 function isPointInsideRectangle(p, r) {
@@ -136,26 +161,13 @@ function draw(screen, data) {
   screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE / 8);
 };
 
-function kick() {
-  oscillator("sine", 100, 0.01, 1, 0.01, 0.5);
-};
-
-function snare() {
-  noise(5000, 0.4, 0.01, 0.3);
-  oscillator("triangle", 150, 0.01, 0.7, 0.01, 0.2);
-};
-
-function highHat() {
-  noise(10000, 0.2, 0.01, 0.3);
-};
-
 var data = {
-  tracks: [createTrack(kick), createTrack(snare), createTrack(highHat)],
+  tracks: [createTrack(highHat), createTrack(snare), createTrack(kick)],
   iStep: 0,
   lastStepTime: Date.now()
 };
 
-data.tracks[2].steps[4] = true;
+data.tracks[0].steps[4] = true;
 
 var screen = document.getElementById("screen").getContext("2d");
 
