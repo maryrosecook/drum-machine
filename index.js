@@ -60,21 +60,13 @@ function isPointInButton(p, column, row) {
            p.y > b.y + BUTTON_SIZE);
 };
 
-function createTrack(play) {
+function createTrack(playSound) {
   var steps = [];
   for (var i = 0; i < 16; i++) {
     steps.push(false);
   }
 
-  return { steps: steps, play: play };
-};
-
-function update(data) {
-  data.step = (data.step + 1) % data.tracks[0].steps.length;
-
-  data.tracks
-    .filter(function(track) { return track.steps[data.step]; })
-    .forEach(function(track) { track.play(); })
+  return { steps: steps, playSound: playSound };
 };
 
 function drawTracks(screen, data) {
@@ -93,8 +85,7 @@ function drawButton(screen, column, row, color) {
 
 var data = {
   step: 0,
-  tracks: [createTrack(note(880)),
-           createTrack(note(659)),
+  tracks: [createTrack(note(659)),
            createTrack(note(587)),
            createTrack(note(523)),
            createTrack(note(440)),
@@ -120,7 +111,11 @@ var screen = document.getElementById("screen").getContext("2d");
 })();
 
 setInterval(function() {
-  update(data);
+  data.step = (data.step + 1) % data.tracks[0].steps.length;
+
+  data.tracks
+    .filter(function(track) { return track.steps[data.step]; })
+    .forEach(function(track) { track.playSound(); })
 }, 100);
 
 (function draw() {
