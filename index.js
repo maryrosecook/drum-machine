@@ -4,9 +4,9 @@ function createGain(start, duration) {
   return gain;
 };
 
-function chain(items) {
-  for (var i = 0; i < items.length - 1; i++) {
-    items[i].connect(items[i + 1]);
+function chain() {
+  for (var i = 0; i < arguments.length - 1; i++) {
+    arguments[i].connect(arguments[i + 1]);
   }
 };
 
@@ -94,9 +94,30 @@ var data = {
 };
 
 var BUTTON_SIZE = 25;
-
 var audio = new window.AudioContext();
 var screen = document.getElementById("screen").getContext("2d");
+
+// update
+
+setInterval(function update() {
+  data.step = (data.step + 1) % data.tracks[0].steps.length;
+
+  data.tracks
+    .filter(function(track) { return track.steps[data.step]; })
+    .forEach(function(track) { track.playSound(); })
+}, 100);
+
+// draw
+
+(function draw() {
+  screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
+  drawTracks(screen, data);
+  drawButton(screen, data.step, data.tracks.length, "deeppink");
+
+  requestAnimationFrame(draw);
+})();
+
+// event handling
 
 (function setupButtonClicking() {
   window.addEventListener("click", function(e) {
@@ -109,20 +130,4 @@ var screen = document.getElementById("screen").getContext("2d");
       });
     });
   });
-})();
-
-setInterval(function update() {
-  data.step = (data.step + 1) % data.tracks[0].steps.length;
-
-  data.tracks
-    .filter(function(track) { return track.steps[data.step]; })
-    .forEach(function(track) { track.playSound(); })
-}, 100);
-
-(function draw() {
-  screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
-  drawTracks(screen, data);
-  drawButton(screen, data.step, data.tracks.length, "deeppink");
-
-  requestAnimationFrame(draw);
 })();
