@@ -60,29 +60,6 @@ function isPointInButton(p, column, row) {
            p.y > b.y + BUTTON_SIZE);
 };
 
-var latestClick = (function() {
-  var latestClick;
-  var mouseDown = false;
-
-  window.addEventListener("mousedown", function(e) {
-    if (!mouseDown) {
-      latestClick = { x: e.clientX, y: e.clientY };
-    }
-
-    mouseDown = true;
-  });
-
-  window.addEventListener("mousedown", function() {
-    mouseDown = false;
-  });
-
-  return function() {
-    var latestClick_ = latestClick;
-    latestClick = undefined;
-    return latestClick_;
-  };
-})();
-
 function createTrack(play) {
   var steps = [];
   for (var i = 0; i < 16; i++) {
@@ -92,34 +69,12 @@ function createTrack(play) {
   return { steps: steps, play: play };
 };
 
-function respondToButtonClicks(data) {
-  var click = latestClick();
-
-  if (click) {
-    data.tracks.forEach(function(track, row) {
-      track.steps.forEach(function(on, column) {
-        if (isPointInButton(click, column, row)) {
-          track.steps[column] = !on;
-        }
-      });
-    });
-  }
-};
-
-function step(data) {
-  if (data.lastStepTime + STEP_EVERY < Date.now()) {
-    data.iStep = (data.iStep + 1) % data.tracks[0].steps.length;
-    data.lastStepTime = Date.now();
-
-    data.tracks
-      .filter(function(track) { return track.steps[data.iStep]; })
-      .forEach(function(track) { track.play(); })
-  }
-};
-
 function update(data) {
-  respondToButtonClicks(data);
-  step(data);
+  data.step = (data.step + 1) % data.tracks[0].steps.length;
+
+  data.tracks
+    .filter(function(track) { return track.steps[data.step]; })
+    .forEach(function(track) { track.play(); })
 };
 
 function drawTracks(screen, data) {
@@ -131,36 +86,47 @@ function drawTracks(screen, data) {
 };
 
 function drawButton(screen, column, row, color) {
-  var p = buttonPosition(column, row);
+  var position = buttonPosition(column, row);
   screen.fillStyle = color;
-  screen.fillRect(p.x, p.y, BUTTON_SIZE, BUTTON_SIZE);
-};
-
-function draw(screen, data) {
-  screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
-  drawTracks(screen, data);
-  drawButton(screen, data.iStep, data.tracks.length, "deeppink");
+  screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE);
 };
 
 var data = {
+  step: 0,
   tracks: [createTrack(note(880)),
            createTrack(note(659)),
            createTrack(note(587)),
            createTrack(note(523)),
            createTrack(note(440)),
-           createTrack(kick)],
-  iStep: 0,
-  lastStepTime: Date.now()
+           createTrack(kick)]
 };
 
 var BUTTON_SIZE = 25;
-var STEP_EVERY = 100;
 
 var audio = new window.AudioContext();
 var screen = document.getElementById("screen").getContext("2d");
 
-(function tick() {
+(function setupButtonClicking() {
+  window.addEventListener("click", function(e) {
+    var click = { x: e.clientX, y: e.clientY };
+    data.tracks.forEach(function(track, row) {
+      track.steps.forEach(function(on, column) {
+        if (isPointInButton(click, column, row)) {
+          track.steps[column] = !on;
+        }
+      });
+    });
+  });
+})();
+
+setInterval(function() {
   update(data);
-  draw(screen, data);
-  requestAnimationFrame(tick);
+}, 100);
+
+(function draw() {
+  screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
+  drawTracks(screen, data);
+  drawButton(screen, data.step, data.tracks.length, "deeppink");
+
+  requestAnimationFrame(draw);
 })();
