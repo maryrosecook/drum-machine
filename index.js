@@ -1,6 +1,6 @@
-function createGain(start, time) {
+function createGain(start, duration) {
   var gain = audio.createGain();
-  decay(gain.gain, start, time);
+  decay(gain.gain, start, duration);
   return gain;
 };
 
@@ -10,38 +10,38 @@ function chain(items) {
   }
 };
 
-function decay(item, start, time) {
+function decay(item, start, duration) {
 	item.setValueAtTime(start, audio.currentTime);
-	item.exponentialRampToValueAtTime(0.01, audio.currentTime + time);
+	item.exponentialRampToValueAtTime(0.01, audio.currentTime + duration);
 };
 
-function createOscillator(type, time) {
+function createOscillator(type, duration) {
   var oscillator = audio.createOscillator();
   oscillator.type = type;
 
 	oscillator.start(audio.currentTime);
-	oscillator.stop(audio.currentTime + time);
+	oscillator.stop(audio.currentTime + duration);
 
   return oscillator;
 };
 
 function note(frequency) {
   return function() {
-    var time = 0.5;
-    var oscillator = createOscillator("sine", time);
+    var duration = 0.5;
+    var oscillator = createOscillator("sine", duration);
     oscillator.frequency.value = frequency;
     chain([oscillator,
-           createGain(1, time),
+           createGain(1, duration),
            audio.destination]);
   };
 };
 
 function kick() {
-  var time = 1;
-  var oscillator = createOscillator("sine", time);
-  decay(oscillator.frequency, 160, time);
+  var duration = 1;
+  var oscillator = createOscillator("sine", duration);
+  decay(oscillator.frequency, 160, duration);
   chain([oscillator,
-         createGain(1, time),
+         createGain(1, duration),
          audio.destination]);
 };
 
