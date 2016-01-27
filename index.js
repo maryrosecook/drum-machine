@@ -110,7 +110,7 @@ var screen = document.getElementById("screen").getContext("2d");
   });
 })();
 
-setInterval(function() {
+setInterval(function update() {
   data.step = (data.step + 1) % data.tracks[0].steps.length;
 
   data.tracks
