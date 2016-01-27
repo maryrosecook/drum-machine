@@ -51,9 +51,9 @@ function createOscillator(type, frequency, time) {
 };
 
 function kick() {
-  var time = 0.2;
+  var time = 1;
   chain([createOscillator("sine", 160, time),
-         createGain(0.5, time),
+         createGain(1, time),
          audio.destination]);
 };
 
