@@ -1,8 +1,3 @@
-var audio = new window.AudioContext();
-
-var BUTTON_SIZE = 25;
-var STEP_EVERY = 100;
-
 function createGain(start, time) {
   var gain = audio.createGain();
   decay(gain.gain, start, time);
@@ -43,18 +38,26 @@ function note(frequency) {
 
 function kick() {
   var time = 1;
-  var oscillator = createOscillator("sine", 160, time);
+  var oscillator = createOscillator("sine", time);
   decay(oscillator.frequency, 160, time);
   chain([oscillator,
          createGain(1, time),
          audio.destination]);
 };
 
-function isPointInsideRectangle(p, r) {
-  return !(p.x < r.x ||
-           p.y < r.y ||
-           p.x > r.x + BUTTON_SIZE ||
-           p.y > r.y + BUTTON_SIZE);
+function buttonPosition(column, row) {
+  return {
+    x: BUTTON_SIZE / 2 + column * BUTTON_SIZE * 1.5,
+    y: BUTTON_SIZE / 2 + row * BUTTON_SIZE * 1.5
+  };
+};
+
+function isPointInButton(p, column, row) {
+  var b = buttonPosition(column, row);
+  return !(p.x < b.x ||
+           p.y < b.y ||
+           p.x > b.x + BUTTON_SIZE ||
+           p.y > b.y + BUTTON_SIZE);
 };
 
 var latestClick = (function() {
@@ -80,13 +83,6 @@ var latestClick = (function() {
   };
 })();
 
-function buttonPosition(column, row) {
-  return {
-    x: BUTTON_SIZE / 2 + column * BUTTON_SIZE * 1.5,
-    y: BUTTON_SIZE / 2 + row * BUTTON_SIZE * 1.5
-  };
-};
-
 function createTrack(play) {
   var steps = [];
   for (var i = 0; i < 16; i++) {
@@ -96,17 +92,21 @@ function createTrack(play) {
   return { steps: steps, play: play };
 };
 
-function update(data) {
+function respondToButtonClicks(data) {
   var click = latestClick();
 
-  for (var row = 0; row < data.tracks.length; row++) {
-    for (var column = 0; column < data.tracks[row].steps.length; column++) {
-      if (click && isPointInsideRectangle(click, buttonPosition(column, row))) {
-        data.tracks[row].steps[column] = !data.tracks[row].steps[column];
-      }
-    }
+  if (click) {
+    data.tracks.forEach(function(track, row) {
+      track.steps.forEach(function(on, column) {
+        if (isPointInButton(click, column, row)) {
+          track.steps[column] = !on;
+        }
+      });
+    });
   }
+};
 
+function step(data) {
   if (data.lastStepTime + STEP_EVERY < Date.now()) {
     data.iStep = (data.iStep + 1) % data.tracks[0].steps.length;
     data.lastStepTime = Date.now();
@@ -117,33 +117,46 @@ function update(data) {
   }
 };
 
-function draw(screen, data) {
-  screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
+function update(data) {
+  respondToButtonClicks(data);
+  step(data);
+};
 
+function drawTracks(screen, data) {
   data.tracks.forEach(function(track, row) {
-    data.tracks[row].steps.forEach(function(on, column) {
-      var position = buttonPosition(column, row);
-      screen.fillStyle = on ? "gold" : "lightgray";
-      screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE);
+    track.steps.forEach(function(on, column) {
+      drawButton(screen, column, row, on ? "gold" : "lightgray");
     });
   });
+};
 
-  var position = buttonPosition(data.iStep, data.tracks.length);
-  screen.fillStyle = "deeppink";
-  screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE / 8);
+function drawButton(screen, column, row, color) {
+  var p = buttonPosition(column, row);
+  screen.fillStyle = color;
+  screen.fillRect(p.x, p.y, BUTTON_SIZE, BUTTON_SIZE);
+};
+
+function draw(screen, data) {
+  screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
+  drawTracks(screen, data);
+  drawButton(screen, data.iStep, data.tracks.length, "deeppink");
 };
 
 var data = {
-  tracks: [createTrack(note(880.000)),
-           createTrack(note(659.255)),
-           createTrack(note(587.330)),
-           createTrack(note(523.251)),
-           createTrack(note(440.000)),
+  tracks: [createTrack(note(880)),
+           createTrack(note(659)),
+           createTrack(note(587)),
+           createTrack(note(523)),
+           createTrack(note(440)),
            createTrack(kick)],
   iStep: 0,
   lastStepTime: Date.now()
 };
 
+var BUTTON_SIZE = 25;
+var STEP_EVERY = 100;
+
+var audio = new window.AudioContext();
 var screen = document.getElementById("screen").getContext("2d");
 
 (function tick() {
