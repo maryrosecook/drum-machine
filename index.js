@@ -11,16 +11,16 @@ function chain(items) {
 };
 
 function decay(item, start, duration) {
-	item.setValueAtTime(start, audio.currentTime);
-	item.exponentialRampToValueAtTime(0.01, audio.currentTime + duration);
+  item.setValueAtTime(start, audio.currentTime);
+  item.exponentialRampToValueAtTime(0.01, audio.currentTime + duration);
 };
 
 function createOscillator(type, duration) {
   var oscillator = audio.createOscillator();
   oscillator.type = type;
 
-	oscillator.start(audio.currentTime);
-	oscillator.stop(audio.currentTime + duration);
+  oscillator.start(audio.currentTime);
+  oscillator.stop(audio.currentTime + duration);
 
   return oscillator;
 };
