@@ -1,6 +1,6 @@
 {
-  "name": "sound",
-  "description": "A sound thing.",
+  "name": "drum-machine",
+  "description": "A drum machine",
   "author": "Mary Rose Cook <mary@maryrosecook.com> (http://maryrosecook.com/)",
   "version": "0.1.0",
   "scripts": {
