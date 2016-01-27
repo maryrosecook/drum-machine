@@ -3,29 +3,10 @@ var audio = new window.AudioContext();
 var BUTTON_SIZE = 25;
 var STEP_EVERY = 100;
 
-function createFilter(type, frequency) {
-	var filter = audio.createBiquadFilter();
-	filter.type = type;
-	filter.frequency.value = frequency;
-  return filter;
-};
-
 function createGain(start, time) {
   var gain = audio.createGain();
   decay(gain.gain, start, time);
   return gain;
-};
-
-function createNoise(time) {
-  var noise = audio.createBufferSource();
-  noise.buffer = audio.createBuffer(1, audio.sampleRate * time, audio.sampleRate);
-  noise.buffer.getChannelData(0)
-    .forEach(function(_, i, output) { output[i] = Math.random() * 2 - 1; });
-
-	noise.start(audio.currentTime);
-	noise.stop(audio.currentTime + time);
-
-  return noise;
 };
 
 function chain(items) {
@@ -39,42 +20,33 @@ function decay(item, start, time) {
 	item.exponentialRampToValueAtTime(0.01, audio.currentTime + time);
 };
 
-function createOscillator(type, frequency, time) {
+function createOscillator(type, time) {
   var oscillator = audio.createOscillator();
   oscillator.type = type;
 
-  decay(oscillator.frequency, frequency, time);
 	oscillator.start(audio.currentTime);
 	oscillator.stop(audio.currentTime + time);
 
   return oscillator;
 };
 
+function note(frequency) {
+  return function() {
+    var time = 0.5;
+    var oscillator = createOscillator("sine", time);
+    oscillator.frequency.value = frequency;
+    chain([oscillator,
+           createGain(1, time),
+           audio.destination]);
+  };
+};
+
 function kick() {
   var time = 1;
-  chain([createOscillator("sine", 160, time),
+  var oscillator = createOscillator("sine", 160, time);
+  decay(oscillator.frequency, 160, time);
+  chain([oscillator,
          createGain(1, time),
-         audio.destination]);
-};
-
-function highHat() {
-  var time = 0.3;
-  chain([createNoise(time),
-         createFilter("highpass", 10000),
-         createGain(0.2, time),
-         audio.destination]);
-};
-
-function snare() {
-  var time = 0.2;
-
-  chain([createOscillator("triangle", 150, time),
-         createGain(0.7, time),
-         audio.destination]);
-
-  chain([createNoise(time),
-         createFilter("highpass", 5000),
-         createGain(0.4, time),
          audio.destination]);
 };
 
@@ -162,12 +134,15 @@ function draw(screen, data) {
 };
 
 var data = {
-  tracks: [createTrack(highHat), createTrack(snare), createTrack(kick)],
+  tracks: [createTrack(note(880.000)),
+           createTrack(note(659.255)),
+           createTrack(note(587.330)),
+           createTrack(note(523.251)),
+           createTrack(note(440.000)),
+           createTrack(kick)],
   iStep: 0,
   lastStepTime: Date.now()
 };
-
-data.tracks[0].steps[4] = true;
 
 var screen = document.getElementById("screen").getContext("2d");
 
