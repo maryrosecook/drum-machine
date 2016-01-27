@@ -15,9 +15,9 @@ function decay(item, start, duration) {
   item.exponentialRampToValueAtTime(0.01, audio.currentTime + duration);
 };
 
-function createOscillator(type, duration) {
+function createSineOscillator(duration) {
   var oscillator = audio.createOscillator();
-  oscillator.type = type;
+  oscillator.type = "sine";
 
   oscillator.start(audio.currentTime);
   oscillator.stop(audio.currentTime + duration);
@@ -28,21 +28,21 @@ function createOscillator(type, duration) {
 function note(frequency) {
   return function() {
     var duration = 0.5;
-    var oscillator = createOscillator("sine", duration);
-    oscillator.frequency.value = frequency;
-    chain([oscillator,
-           createGain(1, duration),
-           audio.destination]);
+    var sine = createSineOscillator(duration);
+    sine.frequency.value = frequency;
+    chain(sine,
+          createGain(1, duration),
+          audio.destination);
   };
 };
 
 function kick() {
   var duration = 1;
-  var oscillator = createOscillator("sine", duration);
-  decay(oscillator.frequency, 160, duration);
-  chain([oscillator,
-         createGain(1, duration),
-         audio.destination]);
+  var sine = createSineOscillator(duration);
+  decay(sine.frequency, 160, duration);
+  chain(sine,
+        createGain(1, duration),
+        audio.destination);
 };
 
 function buttonPosition(column, row) {
