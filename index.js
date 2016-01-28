@@ -1,6 +1,6 @@
 function createAmplifier(audio, startValue, duration) {
   var amplifier = audio.createGain();
-  decay(audio, amplifier.gain, startValue, duration);
+  rampDown(audio, amplifier.gain, startValue, duration);
   return amplifier;
 };
 
@@ -10,7 +10,7 @@ function chain() {
   }
 };
 
-function decay(audio, item, startValue, duration) {
+function rampDown(audio, item, startValue, duration) {
   item.setValueAtTime(startValue, audio.currentTime);
   item.exponentialRampToValueAtTime(0.01, audio.currentTime + duration);
 };
@@ -40,7 +40,7 @@ function kick(audio) {
   return function() {
     var duration = 1;
     var sineWave = createSineWave(audio, duration);
-    decay(audio, sineWave.frequency, 160, duration);
+    rampDown(audio, sineWave.frequency, 160, duration);
     chain(sineWave,
           createAmplifier(audio, 1, duration),
           audio.destination);
