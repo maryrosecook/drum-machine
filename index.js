@@ -1,6 +1,6 @@
-function createAmplifier(startValue, duration) {
+function createAmplifier(audio, startValue, duration) {
   var amplifier = audio.createGain();
-  decay(amplifier.gain, startValue, duration);
+  decay(audio, amplifier.gain, startValue, duration);
   return amplifier;
 };
 
@@ -10,12 +10,12 @@ function chain() {
   }
 };
 
-function decay(item, startValue, duration) {
+function decay(audio, item, startValue, duration) {
   item.setValueAtTime(startValue, audio.currentTime);
   item.exponentialRampToValueAtTime(0.01, audio.currentTime + duration);
 };
 
-function createSineWave(duration) {
+function createSineWave(audio, duration) {
   var oscillator = audio.createOscillator();
   oscillator.type = "sine";
 
@@ -25,24 +25,26 @@ function createSineWave(duration) {
   return oscillator;
 };
 
-function note(frequency) {
+function note(audio, frequency) {
   return function() {
     var duration = 0.5;
-    var sineWave = createSineWave(duration);
+    var sineWave = createSineWave(audio, duration);
     sineWave.frequency.value = frequency;
     chain(sineWave,
-          createAmplifier(1, duration),
+          createAmplifier(audio, 1, duration),
           audio.destination);
   };
 };
 
-function kick() {
-  var duration = 1;
-  var sineWave = createSineWave(duration);
-  decay(sineWave.frequency, 160, duration);
-  chain(sineWave,
-        createAmplifier(1, duration),
-        audio.destination);
+function kick(audio) {
+  return function() {
+    var duration = 1;
+    var sineWave = createSineWave(audio, duration);
+    decay(audio, sineWave.frequency, 160, duration);
+    chain(sineWave,
+          createAmplifier(audio, 1, duration),
+          audio.destination);
+  };
 };
 
 function buttonPosition(column, row) {
@@ -83,22 +85,21 @@ function drawButton(screen, column, row, color) {
   screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE);
 };
 
-var data = {
-  step: 0,
-  tracks: [createTrack(note(880)),
-           createTrack(note(659)),
-           createTrack(note(587)),
-           createTrack(note(523)),
-           createTrack(note(440)),
-           createTrack(kick)]
-};
-
 var BUTTON_SIZE = 25;
 var audio = new AudioContext();
 var screen = document.getElementById("screen").getContext("2d");
 
-// update
+var data = {
+  step: 0,
+  tracks: [createTrack(note(audio, 880)),
+           createTrack(note(audio, 659)),
+           createTrack(note(audio, 587)),
+           createTrack(note(audio, 523)),
+           createTrack(note(audio, 440)),
+           createTrack(kick(audio))]
+};
 
+// update
 setInterval(function update() {
   data.step = (data.step + 1) % data.tracks[0].steps.length;
 
@@ -108,7 +109,6 @@ setInterval(function update() {
 }, 100);
 
 // draw
-
 (function draw() {
   screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
   drawTracks(screen, data);
@@ -118,7 +118,6 @@ setInterval(function update() {
 })();
 
 // handle events
-
 (function setupButtonClicking() {
   addEventListener("click", function(e) {
     var click = { x: e.clientX, y: e.clientY };
