@@ -1,7 +1,7 @@
-function createGain(start, duration) {
-  var gain = audio.createGain();
-  decay(gain.gain, start, duration);
-  return gain;
+function createAmplifier(start, duration) {
+  var amplifier = audio.createGain();
+  decay(amplifier.gain, start, duration);
+  return amplifier;
 };
 
 function chain() {
@@ -15,7 +15,7 @@ function decay(item, start, duration) {
   item.exponentialRampToValueAtTime(0.01, audio.currentTime + duration);
 };
 
-function createSineOscillator(duration) {
+function createSineWave(duration) {
   var oscillator = audio.createOscillator();
   oscillator.type = "sine";
 
@@ -28,20 +28,20 @@ function createSineOscillator(duration) {
 function note(frequency) {
   return function() {
     var duration = 0.5;
-    var sine = createSineOscillator(duration);
-    sine.frequency.value = frequency;
-    chain(sine,
-          createGain(1, duration),
+    var sineWave = createSineWave(duration);
+    sineWave.frequency.value = frequency;
+    chain(sineWave,
+          createAmplifier(1, duration),
           audio.destination);
   };
 };
 
 function kick() {
   var duration = 1;
-  var sine = createSineOscillator(duration);
-  decay(sine.frequency, 160, duration);
-  chain(sine,
-        createGain(1, duration),
+  var sineWave = createSineWave(duration);
+  decay(sineWave.frequency, 160, duration);
+  chain(sineWave,
+        createAmplifier(1, duration),
         audio.destination);
 };
 
