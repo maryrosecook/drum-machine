@@ -85,10 +85,7 @@ function drawButton(screen, column, row, color) {
   screen.fillRect(position.x, position.y, BUTTON_SIZE, BUTTON_SIZE);
 };
 
-var BUTTON_SIZE = 25;
 var audio = new AudioContext();
-var screen = document.getElementById("screen").getContext("2d");
-
 var data = {
   step: 0,
   tracks: [createTrack(note(audio, 880)),
@@ -100,6 +97,7 @@ var data = {
 };
 
 // update
+
 setInterval(function update() {
   data.step = (data.step + 1) % data.tracks[0].steps.length;
 
@@ -109,6 +107,10 @@ setInterval(function update() {
 }, 100);
 
 // draw
+
+var BUTTON_SIZE = 25;
+var screen = document.getElementById("screen").getContext("2d");
+
 (function draw() {
   screen.clearRect(0, 0, screen.canvas.width, screen.canvas.height);
   drawTracks(screen, data);
@@ -118,6 +120,7 @@ setInterval(function update() {
 })();
 
 // handle events
+
 (function setupButtonClicking() {
   addEventListener("click", function(e) {
     var click = { x: e.clientX, y: e.clientY };
