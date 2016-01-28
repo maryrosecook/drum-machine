@@ -62,19 +62,19 @@ function isPointInButton(p, column, row) {
            p.y > b.y + BUTTON_SIZE);
 };
 
-function createTrack(playSound) {
+function createTrack(color, playSound) {
   var steps = [];
   for (var i = 0; i < 16; i++) {
     steps.push(false);
   }
 
-  return { steps: steps, playSound: playSound };
+  return { steps: steps, color: color, playSound: playSound };
 };
 
 function drawTracks(screen, data) {
   data.tracks.forEach(function(track, row) {
     track.steps.forEach(function(on, column) {
-      drawButton(screen, column, row, on ? "gold" : "lightgray");
+      drawButton(screen, column, row, on ? track.color : "lightgray");
     });
   });
 };
@@ -88,12 +88,12 @@ function drawButton(screen, column, row, color) {
 var audio = new AudioContext();
 var data = {
   step: 0,
-  tracks: [createTrack(note(audio, 880)),
-           createTrack(note(audio, 659)),
-           createTrack(note(audio, 587)),
-           createTrack(note(audio, 523)),
-           createTrack(note(audio, 440)),
-           createTrack(kick(audio))]
+  tracks: [createTrack("gold", note(audio, 880)),
+           createTrack("gold", note(audio, 659)),
+           createTrack("gold", note(audio, 587)),
+           createTrack("gold", note(audio, 523)),
+           createTrack("gold", note(audio, 440)),
+           createTrack("dodgerblue", kick(audio))]
 };
 
 // update
@@ -108,7 +108,7 @@ setInterval(function update() {
 
 // draw
 
-var BUTTON_SIZE = 25;
+var BUTTON_SIZE = 26;
 var screen = document.getElementById("screen").getContext("2d");
 
 (function draw() {
