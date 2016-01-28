@@ -117,7 +117,7 @@ setInterval(function update() {
   requestAnimationFrame(draw);
 })();
 
-// event handling
+// handle events
 
 (function setupButtonClicking() {
   window.addEventListener("click", function(e) {
