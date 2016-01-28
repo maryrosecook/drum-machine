@@ -1,6 +1,6 @@
-function createAmplifier(start, duration) {
+function createAmplifier(startValue, duration) {
   var amplifier = audio.createGain();
-  decay(amplifier.gain, start, duration);
+  decay(amplifier.gain, startValue, duration);
   return amplifier;
 };
 
@@ -10,8 +10,8 @@ function chain() {
   }
 };
 
-function decay(item, start, duration) {
-  item.setValueAtTime(start, audio.currentTime);
+function decay(item, startValue, duration) {
+  item.setValueAtTime(startValue, audio.currentTime);
   item.exponentialRampToValueAtTime(0.01, audio.currentTime + duration);
 };
 
