@@ -94,7 +94,7 @@ var data = {
 };
 
 var BUTTON_SIZE = 25;
-var audio = new window.AudioContext();
+var audio = new AudioContext();
 var screen = document.getElementById("screen").getContext("2d");
 
 // update
@@ -120,7 +120,7 @@ setInterval(function update() {
 // handle events
 
 (function setupButtonClicking() {
-  window.addEventListener("click", function(e) {
+  addEventListener("click", function(e) {
     var click = { x: e.clientX, y: e.clientY };
     data.tracks.forEach(function(track, row) {
       track.steps.forEach(function(on, column) {
