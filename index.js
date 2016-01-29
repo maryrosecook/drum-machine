@@ -31,7 +31,7 @@ function note(audio, frequency) {
     var sineWave = createSineWave(audio, duration);
     sineWave.frequency.value = frequency;
     chain(sineWave,
-          createAmplifier(audio, 1, duration),
+          createAmplifier(audio, 0.4, duration),
           audio.destination);
   };
 };
@@ -42,7 +42,7 @@ function kick(audio) {
     var sineWave = createSineWave(audio, duration);
     rampDown(audio, sineWave.frequency, 160, duration);
     chain(sineWave,
-          createAmplifier(audio, 1, duration),
+          createAmplifier(audio, 0.4, duration),
           audio.destination);
   };
 };
