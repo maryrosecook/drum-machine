@@ -31,14 +31,14 @@ function note(audio, frequency) {
     var sineWave = createSineWave(audio, duration);
     sineWave.frequency.value = frequency;
     chain([sineWave,
-           createAmplifier(audio, 0.4, duration),
+           createAmplifier(audio, 0.2, duration),
            audio.destination]);
   };
 };
 
 function kick(audio) {
   return function() {
-    var duration = 1;
+    var duration = 2;
     var sineWave = createSineWave(audio, duration);
     rampDown(audio, sineWave.frequency, 160, duration);
     chain([sineWave,
