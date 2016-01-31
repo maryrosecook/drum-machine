@@ -4,9 +4,9 @@ function createAmplifier(audio, startValue, duration) {
   return amplifier;
 };
 
-function chain() {
-  for (var i = 0; i < arguments.length - 1; i++) {
-    arguments[i].connect(arguments[i + 1]);
+function chain(items) {
+  for (var i = 0; i < items.length - 1; i++) {
+    items[i].connect(items[i + 1]);
   }
 };
 
@@ -30,9 +30,9 @@ function note(audio, frequency) {
     var duration = 0.5;
     var sineWave = createSineWave(audio, duration);
     sineWave.frequency.value = frequency;
-    chain(sineWave,
-          createAmplifier(audio, 0.4, duration),
-          audio.destination);
+    chain([sineWave,
+           createAmplifier(audio, 0.4, duration),
+           audio.destination]);
   };
 };
 
@@ -41,9 +41,9 @@ function kick(audio) {
     var duration = 1;
     var sineWave = createSineWave(audio, duration);
     rampDown(audio, sineWave.frequency, 160, duration);
-    chain(sineWave,
-          createAmplifier(audio, 0.4, duration),
-          audio.destination);
+    chain([sineWave,
+           createAmplifier(audio, 1, duration),
+           audio.destination]);
   };
 };
 
