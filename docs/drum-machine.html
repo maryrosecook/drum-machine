@@ -27,7 +27,8 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>Create the audio element that is used to make sound.</p>
+              <p>Create the object that contains functions that use web audio to
+make sound.</p>
 
             </div>
             
@@ -72,8 +73,8 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p><code>tracks</code> holds the six tracks of the drum machine.  Each
-track has a sound and sixteen steps (or beats).</p>
+              <p><code>tracks</code> holds the six tracks of the drum machine.  Each track
+has a sound and sixteen steps (or beats).</p>
 
             </div>
             
@@ -134,8 +135,8 @@ track has a sound and sixteen steps (or beats).</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Increase <code>data.step</code> by one.  If <code>data.step</code> is <code>15</code>, the last
-step, loop back around to <code>0</code>, the first step.</p>
+              <p>Increase <code>data.step</code> by one.  If <code>data.step</code> is <code>15</code> (the last
+step) loop back around to <code>0</code> (the first step).</p>
 
             </div>
             
@@ -150,8 +151,8 @@ step, loop back around to <code>0</code>, the first step.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>Find all the tracks where the curent step is on.  Play their
-sounds.</p>
+              <p>Find all the tracks where the current step is on.  Play the
+sounds for those tracks.</p>
 
             </div>
             
@@ -194,8 +195,8 @@ sounds.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Get the <code>screen</code> object.  This is a bundle of functions that, when
-called, draw in the canvas element created in index.html.</p>
+              <p>Get the <code>screen</code> object.  This is a bundle of functions that draw
+in the canvas element.</p>
 
             </div>
             
@@ -210,10 +211,9 @@ called, draw in the canvas element created in index.html.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p><strong>draw()</strong> draws the drum machine.
-Called once at the beginning of the program.  Is then called 60
-times a second forever because of the <code>requestAnimationFrame()</code>
-call below.</p>
+              <p><strong>draw()</strong> draws the drum machine.  Called once at the beginning of
+the program.  It’s then called 60 times a second forever (see the
+call to <code>requestAnimationFrame()</code> below).</p>
 
             </div>
             
@@ -258,7 +258,7 @@ call below.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
-              <p>Draw the pink square that indicates the current step.</p>
+              <p>Draw the pink square that indicates the current step (beat).</p>
 
             </div>
             
@@ -315,7 +315,7 @@ call below.</p>
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p><strong>setupButtonClicking()</strong> sets up the event handler that will make
-clicks turn track buttons on and off.</p>
+mouse clicks turn track buttons on and off.</p>
 
             </div>
             
@@ -345,7 +345,8 @@ clicks turn track buttons on and off.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p>…Get the coordinates of the mouse pointer relative to the canvas…</p>
+              <p>…Get the coordinates of the mouse pointer relative to the
+canvas…</p>
 
             </div>
             
@@ -405,7 +406,7 @@ clicks turn track buttons on and off.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <p>…Switch it off it was on or on if it was off.</p>
+              <p>…Switch it off if it was on or on if it was off.</p>
 
             </div>
             
@@ -442,7 +443,8 @@ clicks turn track buttons on and off.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
-              <p>Create the basic note as a sine wave.  A sine wave produces a pure tone.  Set it to play for <code>duration</code> seconds.</p>
+              <p>Create the basic note as a sine wave.  A sine wave produces a
+pure tone.  Set it to play for <code>duration</code> seconds.</p>
 
             </div>
             
@@ -457,7 +459,8 @@ clicks turn track buttons on and off.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
-              <p>Set the note’s frequency to <code>frequency</code>.  A greater <code>frequency</code> produces a higher note.</p>
+              <p>Set the note’s frequency to <code>frequency</code>.  A greater frequency
+produces a higher note.</p>
 
             </div>
             
@@ -472,8 +475,9 @@ clicks turn track buttons on and off.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
-              <p>Web audio works by connecting nodes togther in chains.  The output of one
-node becomes the input to the next.  Thus, sound can be created and modified.</p>
+              <p>Web audio works by connecting nodes together in chains.  The
+output of one node becomes the input to the next.  In this way,
+sound is created and modified.</p>
 
             </div>
             
@@ -504,7 +508,8 @@ node becomes the input to the next.  Thus, sound can be created and modified.</p
                 <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>An amplifier reduces the volume of the tone from 20% to 0
-over the duration of the tone.  This produces an echoey effect.</p>
+over the duration of the tone.  This produces an echoey
+effect.</p>
 
             </div>
             
@@ -519,7 +524,8 @@ over the duration of the tone.  This produces an echoey effect.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
-              <p>The amplified output is sent to the browser to be played aloud.</p>
+              <p>The amplified output is sent to the browser to be played
+aloud.</p>
 
             </div>
             
@@ -536,7 +542,7 @@ over the duration of the tone.  This produces an echoey effect.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
-              <p><strong>note()</strong> plays a kick drum sound for <code>1</code> second.</p>
+              <p><strong>kick()</strong> plays a kick drum sound for <code>1</code> second.</p>
 
             </div>
             
@@ -553,7 +559,8 @@ over the duration of the tone.  This produces an echoey effect.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
-              <p>Create the basic note as a sine wave.  A sine wave produces a pure tone.  Set it to play for <code>duration</code> seconds.</p>
+              <p>Create the basic note as a sine wave.  A sine wave produces a
+pure tone.  Set it to play for <code>duration</code> seconds.</p>
 
             </div>
             
@@ -568,8 +575,9 @@ over the duration of the tone.  This produces an echoey effect.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
-              <p>Set the initial frequency of the drum at a low <code>160</code>.  Reduce it to 0 over the duration of the sound.
-This produces that BBBBBBBoooooo….. drop effect.</p>
+              <p>Set the initial frequency of the drum at a low <code>160</code>.  Reduce
+it to 0 over the duration of the sound.  This produces that
+BBBBBBBoooooo….. drop effect.</p>
 
             </div>
             
@@ -584,8 +592,9 @@ This produces that BBBBBBBoooooo….. drop effect.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
-              <p>Web audio works by connecting nodes togther in chains.  The output of one
-node becomes the input to the next.  Thus, sound can be created and modified.</p>
+              <p>Web audio works by connecting nodes together in chains.  The
+output of one node becomes the input to the next.  In this way,
+sound is created and modified.</p>
 
             </div>
             
@@ -616,7 +625,8 @@ node becomes the input to the next.  Thus, sound can be created and modified.</p
                 <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>An amplifier reduces the volume of the tone from 40% to 0
-over the duration of the tone.  This produces an echoey effect.</p>
+over the duration of the tone.  This produces an echoey
+effect.</p>
 
             </div>
             
@@ -631,7 +641,8 @@ over the duration of the tone.  This produces an echoey effect.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
-              <p>The amplified output is sent to the browser to be played aloud.</p>
+              <p>The amplified output is sent to the browser to be played
+aloud.</p>
 
             </div>
             
@@ -648,8 +659,8 @@ over the duration of the tone.  This produces an echoey effect.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
-              <p><strong>createSineWave()</strong> returns a sound node that
-plays a sine wave of <code>duration</code> seconds.</p>
+              <p><strong>createSineWave()</strong> returns a sound node that plays a sine wave
+for <code>duration</code> seconds.</p>
 
             </div>
             
@@ -664,7 +675,7 @@ plays a sine wave of <code>duration</code> seconds.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
-              <p>Create an oscillator (a sound wave that goes up and down).</p>
+              <p>Create an oscillating sound wave.</p>
 
             </div>
             
@@ -679,9 +690,8 @@ plays a sine wave of <code>duration</code> seconds.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
-              <p>Make the oscillator a sine wave.  Different types of wave
-produces different characters of sound.  A sine wave produces
-a pure tone.</p>
+              <p>Make the oscillator a sine wave.  Different types of wave produce
+different characters of sound.  A sine wave produces a pure tone.</p>
 
             </div>
             
@@ -711,8 +721,8 @@ a pure tone.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
-              <p>Tell the sine wave to stop playing after <code>duration</code> seconds
-have passed.</p>
+              <p>Tell the sine wave to stop playing after <code>duration</code> seconds have
+passed.</p>
 
             </div>
             
@@ -743,9 +753,9 @@ have passed.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
-              <p><strong>rampDown()</strong> takes a <code>value</code>, sets it to <code>startValue</code> and
-reduces it to almost <code>0</code> in <code>duration</code> seconds.  <code>value</code> might be the volume
-or frequency of a sound.</p>
+              <p><strong>rampDown()</strong> takes <code>value</code>, sets it to <code>startValue</code> and reduces
+it to almost <code>0</code> in <code>duration</code> seconds.  <code>value</code> might be the
+volume or frequency of a sound.</p>
 
             </div>
             
@@ -763,9 +773,9 @@ or frequency of a sound.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
-              <p><strong>createAmplifier()</strong> returns a sound node that controls the volume of the sound
-coming into it.  The volume is started at <code>startValue</code> and ramped down
-in <code>duration</code> seconds to almost <code>0</code>.</p>
+              <p><strong>createAmplifier()</strong> returns a sound node that controls the volume
+of the sound entering it.  The volume is started at <code>startValue</code>
+and ramped down in <code>duration</code> seconds to almost <code>0</code>.</p>
 
             </div>
             
@@ -784,9 +794,10 @@ in <code>duration</code> seconds to almost <code>0</code>.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
-              <p><strong>chain()</strong> connects an array of <code>soundNodes</code> into a chain.
-If there are three nodes in <code>soundNodes</code>, the first will be joined to the second
-and the second to the third.</p>
+              <p><strong>chain()</strong> connects an array of <code>soundNodes</code> into a chain.  If
+there are three nodes in <code>soundNodes</code>, the output of the first will
+be the input to the second, and the output of the second will be
+the input to the third.</p>
 
             </div>
             
@@ -805,9 +816,10 @@ and the second to the third.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-50">&#182;</a>
               </div>
-              <p><strong>createTrack()</strong> returns an object that represents a track.
-This contains an array of 16 steps.  Each of these are either on (<code>true</code>) or off (<code>false</code>).
-It contains <code>color</code>, the color to draw buttons when they are on.  It contains <code>playSound</code>, the function
+              <p><strong>createTrack()</strong> returns an object that represents a track.  This
+track contains an array of 16 steps.  Each of these are either on
+(<code>true</code>) or off (<code>false</code>).  It contains <code>color</code>, the color to draw
+buttons when they are on.  It contains <code>playSound</code>, the function
 that plays the sound of the track.</p>
 
             </div>
@@ -853,7 +865,7 @@ that plays the sound of the track.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-52">&#182;</a>
               </div>
-              <p><strong>drawButton()</strong> draws a button with <code>color</code> at <code>column</code> and <code>row</code>.</p>
+              <p><strong>drawButton()</strong> draws a button in <code>color</code> at <code>column</code> and <code>row</code>.</p>
 
             </div>
             
@@ -872,7 +884,7 @@ that plays the sound of the track.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-53">&#182;</a>
               </div>
-              <p><strong>drawButton()</strong> draws the tracks in the drum machine.</p>
+              <p><strong>drawTracks()</strong> draws the tracks in the drum machine.</p>
 
             </div>
             
@@ -896,8 +908,8 @@ that plays the sound of the track.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-54">&#182;</a>
               </div>
-              <p><strong>isPointInButton()</strong> returns true if <code>p</code>, the coordinates of a mouse click
-are inside the button at <code>column</code> and <code>row</code>.</p>
+              <p><strong>isPointInButton()</strong> returns true if <code>p</code>, the coordinates of a
+mouse click, are inside the button at <code>column</code> and <code>row</code>.</p>
 
             </div>
             
