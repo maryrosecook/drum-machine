@@ -1,8 +1,24 @@
 # Drum machine
 
-A drum machine that I livecoded.
+How to write a simple drum machine that runs in the browser.
 
-![Screenshot of the drum machine](screenshot.png)
+![Screenshot of the drum machine](screenshot.gif)
+
+## Video of Mary livecoding the drum machine
+
+VIDEO HERE
+
+## Annotated source code
+
+The <a href="/drum-machine.js">heavily annotated source code</a> is 114 lines long.
+
+## Getting the code
+
+Clone it from [GitHub](https://github.com/maryrosecook/drum-machine)
+
+```bash
+$ git clone git@github.com:maryrosecook/drum-machine.git
+```
 
 ## Contact
 
