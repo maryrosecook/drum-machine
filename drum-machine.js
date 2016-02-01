@@ -67,8 +67,8 @@ var screen = document.getElementById("screen").getContext("2d");
 // mouse clicks turn track buttons on and off.
 (function setupButtonClicking() {
 
-  // Every time the user clicks...
-  addEventListener("click", function(e) {
+  // Every time the user clicks on the canvas...
+  document.getElementById("screen").addEventListener("click", function(e) {
 
     // ...Get the coordinates of the mouse pointer relative to the
     // canvas...
