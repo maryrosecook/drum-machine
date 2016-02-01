@@ -4,9 +4,11 @@
   "author": "Mary Rose Cook <mary@maryrosecook.com> (http://maryrosecook.com/)",
   "version": "0.1.0",
   "scripts": {
-    "start": "live-server . --port=4000 --no-browser --host=localhost"
+    "start": "live-server . --port=4000 --no-browser --host=localhost",
+    "annotate": "node_modules/docco/bin/docco drum-machine.js"
   },
   "dependencies": {
+    "docco": "^0.7.0",
     "live-server": "^0.8.2"
   }
 }
