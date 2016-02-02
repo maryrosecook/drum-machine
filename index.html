@@ -23,15 +23,27 @@
 
     <h2>Demo</h2>
 
-    <p>
-      Click the buttons to turn the beats on or off.
-    </p>
+    <div id="mobile-demo" style="display: none;">
+      <p>
+        Below is just a screenshot.  The drum machine doesn't work in
+        mobile browsers.  To try it out, visit this site on a deskop
+        or laptop computer.
+      </p>
 
-    <!-- Canvas element where the drum machine is drawn -->
-    <canvas id="screen" width="637px" height="286px"></canvas>
+      <img src="/screenshot.gif" width="100%">
+    </div>
 
-    <!-- Load the code that runs the drum machine -->
-    <script src="drum-machine.js"></script>
+    <div id="desktop-demo">
+      <p>
+        Click the buttons to turn the beats on or off.
+      </p>
+
+      <!-- Canvas element where the drum machine is drawn -->
+      <canvas id="screen" width="637px" height="286px"></canvas>
+
+      <!-- Load the code that runs the drum machine -->
+      <script src="drum-machine.js"></script>
+    </div>
 
     <h2>Video of Mary livecoding the drum machine</h2>
 

@@ -133,6 +133,14 @@ li {
     display: none;
   }
 
+  #desktop-demo {
+    display: none;
+  }
+
+  #mobile-demo {
+    display: block !important;
+  }
+
   /* resize videos to screen size */
 
   .video-container {
