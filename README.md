@@ -8,7 +8,7 @@ Running version at http://drum-machine.maryrosecook.com
 
 ## Video of Mary livecoding the drum machine
 
-VIDEO HERE
+https://www.youtube.com/watch?v=jB219tQWjEg
 
 ## Annotated source code
 
